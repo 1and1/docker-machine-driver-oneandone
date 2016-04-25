@@ -14,10 +14,9 @@ func TestSetConfigFromFlags(t *testing.T) {
 			"oneandone-api-key":     "856fb4d0188eaf8149eae9643bacf993",
 			"oneandone-ssh-pass":    "6dW51RcH33DCPZw",
 			"oneandone-datacenter":  "DE",
-			"oneandone-flavor":      "XXL",
+			"oneandone-size":        "XXL",
 			"oneandone-os":          "centos7-64std",
 			"oneandone-firewall-id": "8F9BC3547812E0736E0AFD671EC43A1A",
-			"oneandone-ssh-key":     "public-key",
 		},
 		CreateFlags: driver.GetCreateFlags(),
 	}
@@ -60,8 +59,8 @@ func TestDefaultConfigFlags(t *testing.T) {
 	if driver.Appliance == "" {
 		t.Errorf("oneandone default OS should not be empty")
 	}
-	if driver.Flavor == "" {
-		t.Errorf("oneandone default flavor size should not be empty")
+	if driver.Size == "" {
+		t.Errorf("oneandone default size should not be empty")
 	}
 	if driver.Datacenter == "" {
 		t.Errorf("oneandone default datacenter should not be empty")

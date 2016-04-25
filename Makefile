@@ -1,6 +1,6 @@
 default: build
 
-version := "v1.0.0"
+version := "v1.1.0"
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 name := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
@@ -30,11 +30,11 @@ release:
 	rm -rf release
 	mkdir release
 	GOOS=linux GOARCH=amd64 GOGC=off CGOENABLED=0 go build -i -o release/$(name) ./bin
-	tar --remove-files -cvzf release/$(name)-$(version)-linux-amd64.tar.gz -C release $(name)
+	tar --remove-files -cvzf release/$(name)-linux-amd64-$(version).tar.gz -C release $(name)
 	GOOS=darwin GOARCH=amd64 GOGC=off CGOENABLED=0 go build -i -o release/$(name) ./bin
-	tar --remove-files -cvzf release/$(name)-$(version)-darwin-amd64.tar.gz -C release $(name)
+	tar --remove-files -cvzf release/$(name)-darwin-amd64-$(version).tar.gz -C release $(name)
 	GOOS=windows GOARCH=amd64 GOGC=off CGOENABLED=0 go build -i -o release/$(name).exe ./bin
-	tar --remove-files -cvzf release/$(name)-$(version)-windows-amd64.tar.gz -C release $(name).exe
+	tar --remove-files -cvzf release/$(name)-windows-amd64-$(version).tar.gz -C release $(name).exe
 
 install:
 	cp bin/$(name) /usr/local/bin/
