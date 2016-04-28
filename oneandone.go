@@ -23,7 +23,7 @@ type Driver struct {
 	Description      string
 	Appliance        string
 	Datacenter       string
-	Flavor           string
+	Size             string
 	SSHKey           string
 	FirewallPolicy   string
 	LoadBalancer     string
@@ -31,7 +31,7 @@ type Driver struct {
 
 	applianceID  string
 	datacenterID string
-	flavorID     string
+	sizeID       string
 	password     string
 	publicIpID   string
 	client       *oneandone.API
@@ -39,7 +39,7 @@ type Driver struct {
 
 const (
 	defaultOS            = "ubuntu1404-64std"
-	defaultFlavor        = "M"
+	defaultSize          = "M"
 	defaultDatacenter    = "US"
 	firewallPolicyPrefix = "Docker-Driver-Required-Policy_"
 )
@@ -51,60 +51,55 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_API_KEY",
 			Name:   "oneandone-api-key",
-			Usage:  "1&1 API key",
+			Usage:  "1&1 API Key",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_SSH_PASSWORD",
 			Name:   "oneandone-ssh-pass",
-			Usage:  "1&1 SSH password",
-		},
-		mcnflag.StringFlag{
-			EnvVar: "ONEANDONE_SSH_KEY",
-			Name:   "oneandone-ssh-key",
-			Usage:  "1&1 SSH key",
+			Usage:  "1&1 SSH Password",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_DATACENTER",
 			Name:   "oneandone-datacenter",
-			Usage:  "1&1 datacenter. Default: " + defaultDatacenter,
+			Usage:  "1&1 Data Center. Default: " + defaultDatacenter,
 			Value:  defaultDatacenter,
 		},
 		mcnflag.StringFlag{
-			EnvVar: "ONEANDONE_FLAVOR",
-			Name:   "oneandone-flavor",
-			Usage:  "1&1 VPS flavor. Default: " + defaultFlavor,
-			Value:  defaultFlavor,
+			EnvVar: "ONEANDONE_SIZE",
+			Name:   "oneandone-size",
+			Usage:  "1&1 Cloud Server Size. Default: " + defaultSize,
+			Value:  defaultSize,
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_OS",
 			Name:   "oneandone-os",
-			Usage:  "1&1 appliance OS. Default: " + defaultOS,
+			Usage:  "1&1 Appliance OS. Default: " + defaultOS,
 			Value:  defaultOS,
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_FIREWALL",
 			Name:   "oneandone-firewall-id",
-			Usage:  "1&1 firewall policy ID",
+			Usage:  "1&1 Firewall Policy ID",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_IP_ADDRESS",
 			Name:   "oneandone-ip-address",
-			Usage:  "Unassigned 1&1 public IP address",
+			Usage:  "Unassigned 1&1 Public IP Address",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_LOADBALANCER",
 			Name:   "oneandone-loadbalancer-id",
-			Usage:  "1&1 load balancer ID",
+			Usage:  "1&1 Load Balancer ID",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_MONITOR_POLICY",
 			Name:   "oneandone-monitor-policy-id",
-			Usage:  "1&1 monitoring policy ID",
+			Usage:  "1&1 Monitoring Policy ID",
 		},
 		mcnflag.StringFlag{
 			EnvVar: "ONEANDONE_SERVER_DESCRIPTION",
 			Name:   "oneandone-server-description",
-			Usage:  "VPS description",
+			Usage:  "1&1 Cloud Server Description",
 		},
 	}
 }
@@ -123,7 +118,7 @@ func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
 	d.IPAddress = flags.String("oneandone-ip-address")
 	d.Appliance = flags.String("oneandone-os")
 	d.Datacenter = flags.String("oneandone-datacenter")
-	d.Flavor = flags.String("oneandone-flavor")
+	d.Size = flags.String("oneandone-size")
 	d.FirewallPolicy = flags.String("oneandone-firewall-id")
 	d.LoadBalancer = flags.String("oneandone-loadbalancer-id")
 	d.MonitoringPolicy = flags.String("oneandone-monitor-policy-id")
@@ -131,7 +126,6 @@ func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
 	d.SSHUser = drivers.DefaultSSHUser
 	d.SSHPort = drivers.DefaultSSHPort
 	d.password = flags.String("oneandone-ssh-pass")
-	d.SSHKey = flags.String("oneandone-ssh-key")
 	d.SetSwarmConfigFromFlags(flags)
 
 	return nil
@@ -218,14 +212,12 @@ func (d *Driver) Create() error {
 		d.FirewallPolicy = fp.Id
 	}
 
-	if d.SSHKey == "" {
-		log.Debug("Generating SSH key...")
-		key, err := d.createSSHKey()
-		if err != nil {
-			return err
-		}
-		d.SSHKey = key
+	log.Debug("Creating SSH key...")
+	key, err := d.createSSHKey()
+	if err != nil {
+		return err
 	}
+	d.SSHKey = key
 
 	log.Info("Creating 1&1 Cloud Server...")
 
@@ -236,7 +228,7 @@ func (d *Driver) Create() error {
 		PowerOn:     true,
 		Password:    d.password,
 		Hardware: oneandone.Hardware{
-			FixedInsSizeId: d.flavorID,
+			FixedInsSizeId: d.sizeID,
 		},
 		DatacenterId:       d.datacenterID,
 		FirewallPolicyId:   d.FirewallPolicy,
@@ -275,11 +267,11 @@ func (d *Driver) Create() error {
 	}
 
 	log.Info("Finishing configuration and starting machine...")
-	err = client.WaitForState(machine, "POWERED_ON", 5, 400)
+	err = client.WaitForState(machine, "POWERED_ON", 10, 400)
 	if err != nil {
 		return err
 	}
-	log.Infof("Created 1&1 VPS, ID: %s, Public IP: %s", d.MachineID, d.IPAddress)
+	log.Infof("Created 1&1 Cloud Server, ID: %s, Public IP: %s", d.MachineID, d.IPAddress)
 
 	return nil
 }
@@ -509,24 +501,24 @@ func (d *Driver) validateMonitorPolicy() error {
 }
 
 func (d *Driver) validateFlavorSize() error {
-	log.Debugf("validating  '%s' flavor", d.Flavor)
-	if strings.ToUpper(d.Flavor) == "S" {
-		return fmt.Errorf("1&1 VPS flavor should be 'M' or larger")
+	log.Debugf("validating  '%s' flavor", d.Size)
+	if strings.ToUpper(d.Size) == "S" {
+		return fmt.Errorf("1&1 Cloud Server size should be 'M' or larger")
 	}
 
-	flavors, err := d.getClient().ListFixedInstanceSizes()
+	fixedSizes, err := d.getClient().ListFixedInstanceSizes()
 	if err != nil {
 		return err
 	}
 
-	for _, f := range flavors {
-		if strings.ToUpper(d.Flavor) == strings.ToUpper(f.Name) {
-			d.flavorID = f.Id
+	for _, f := range fixedSizes {
+		if strings.ToUpper(d.Size) == strings.ToUpper(f.Name) {
+			d.sizeID = f.Id
 			return nil
 		}
 	}
 
-	return fmt.Errorf("VPS flavor '%s' not available", d.Flavor)
+	return fmt.Errorf("Cloud Server size '%s' not available", d.Size)
 }
 
 func (d *Driver) validateFirewallPolicy() error {
