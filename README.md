@@ -150,16 +150,20 @@ Supported values for `--oneandone-os` are listed below.
 | `centos7-64min`                       |
 | `centos7-64std`                       |
 | `centos7-64std+cpanel`                |
-| `centos7-64std+Plesk12unlimited`      |
-| `centos7-64std+Plesk12.5unlimited`    |
+| `centos7-64std+plesk12unlimited`      |
+| `centos7-64std+plesk12.5unlimited`    |
+| `debian8-64min`                       |
+| `debian8-64std`                       |
+| `debian8-64std+plesk12.5unlimited`    |
 | `ubuntu1204-64min`                    |
 | `ubuntu1204-64std`                    |
-| `ubuntu1204-64std+Plesk12.5unlimited` |
-| `ubuntu1204-64std+Plesk12unlimited`   |
-| `ubuntu1404-64std`                    |
+| `ubuntu1204-64std+plesk12unlimited`   |
+| `ubuntu1204-64std+plesk12.5unlimited` |
 | `ubuntu1404-64min`                    |
-| `ubuntu1404-64std+Plesk12unlimited`   |
-| `ubuntu1404-64std+Plesk12.5unlimited` |
+| `ubuntu1404-64std`                    |
+| `ubuntu1404-64std+plesk12unlimited`   |
+| `ubuntu1604-64min`                    |
+| `ubuntu1604-64std`                    |
 
  
 ### Example
