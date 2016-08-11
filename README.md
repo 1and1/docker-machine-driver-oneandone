@@ -1,5 +1,18 @@
 # 1&amp;1 Cloud Driver for Docker Machine
 
+## Table of Contents
+* [Overview](#overview)
+* [Requirements](#requirements)
+* [Installation](#installation)
+  * [From a Release](#from-a-release)
+  * [From Source](#from-source)
+* [Usage](#usage)
+  * [Available Options](#available-options)
+  * [Example](#example)
+* [License](#license)
+
+## Overview
+
 The 1&amp;1 Cloud Driver is a plugin for Docker Machine which allows you to automate the provisioning of Docker hosts on 1&amp;1 Cloud Servers. The plugin is based on the [1&amp;1 CloudServer Go SDK](https://github.com/1and1/oneandone-cloudserver-sdk-go) and [Cloud API](https://cloudpanel-api.1and1.com/documentation/1and1/). 
 
 To acquire 1&amp;1 Cloud API credentials visit https://www.1and1.com.
@@ -137,16 +150,20 @@ Supported values for `--oneandone-os` are listed below.
 | `centos7-64min`                       |
 | `centos7-64std`                       |
 | `centos7-64std+cpanel`                |
-| `centos7-64std+Plesk12unlimited`      |
-| `centos7-64std+Plesk12.5unlimited`    |
+| `centos7-64std+plesk12unlimited`      |
+| `centos7-64std+plesk12.5unlimited`    |
+| `debian8-64min`                       |
+| `debian8-64std`                       |
+| `debian8-64std+plesk12.5unlimited`    |
 | `ubuntu1204-64min`                    |
 | `ubuntu1204-64std`                    |
-| `ubuntu1204-64std+Plesk12.5unlimited` |
-| `ubuntu1204-64std+Plesk12unlimited`   |
-| `ubuntu1404-64std`                    |
+| `ubuntu1204-64std+plesk12unlimited`   |
+| `ubuntu1204-64std+plesk12.5unlimited` |
 | `ubuntu1404-64min`                    |
-| `ubuntu1404-64std+Plesk12unlimited`   |
-| `ubuntu1404-64std+Plesk12.5unlimited` |
+| `ubuntu1404-64std`                    |
+| `ubuntu1404-64std+plesk12unlimited`   |
+| `ubuntu1604-64min`                    |
+| `ubuntu1604-64std`                    |
 
  
 ### Example
