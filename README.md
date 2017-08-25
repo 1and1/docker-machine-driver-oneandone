@@ -1,5 +1,7 @@
 # 1&amp;1 Cloud Driver for Docker Machine
 
+For more information on the 1&amp;1 Cloud Driver for Docker Machine see the [1&1 Community Portal](https://www.1and1.com/cloud-community/).
+
 ## Table of Contents
 * [Overview](#overview)
 * [Requirements](#requirements)
